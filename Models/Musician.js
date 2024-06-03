@@ -26,6 +26,14 @@ Musician.init(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
+    password: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    roleId: {
+      type: DataTypes.INTEGER,
+      defaultValue: 2
+    },
   },
   {
     sequelize: connection,
