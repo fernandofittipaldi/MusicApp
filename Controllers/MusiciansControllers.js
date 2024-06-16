@@ -1,4 +1,5 @@
 import { Musician, Role } from "../Models/index.js";
+import { generateToken, decodeToken } from "../utils/token.js";
 
 class MusicianControllers{
   constructor(){}
@@ -103,11 +104,30 @@ class MusicianControllers{
       if (!data) throw new Error('Invalid User');
       const validate = await data.validatePassword(password);
       if (!validate) throw new Error('Invalid Password');
-      res.status(200).send({ success: true, message: data.id});
+
+      const payload = {
+        id: data.id,
+        name: data.name,
+      };
+
+      const token = generateToken(payload);
+      res.cookie('token', token);
+
+      res.status(200).send({ success: true, message: "Login OK"});
     } catch (error) {
       res.status(500).send({ success: false, message: error.message});
     }
   };
+
+  me = async (req, res) => {
+    try {
+      const { user } =req;
+      if (!user) throw new Error ('Invalid login');
+      res.status(200).send({ success: true, message: { user }});
+    } catch (error) {
+      res.status(500).send({ success: false, message: error.message});
+    }
+  }
 
 }
 
