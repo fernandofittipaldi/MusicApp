@@ -1,7 +1,14 @@
 import { DataTypes, Model } from "sequelize";
 import connection from "../connection/connection.js";
+import bcrypt from "bcrypt";
 
-class Musician extends Model {}
+class Musician extends Model {
+
+  validatePassword = async (password) => {
+    const validate = await bcrypt.compare(password, this.password);
+    return validate;
+  }; 
+}
 
 Musician.init(
   {
@@ -17,6 +24,9 @@ Musician.init(
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,
+      validate: {
+        isEmail: true,
+      },
     },
     city: {
       type: DataTypes.STRING,
@@ -38,11 +48,21 @@ Musician.init(
       type: DataTypes.INTEGER,
       defaultValue: 1
     },
+    salt: {
+      type: DataTypes.STRING,
+    }
   },
   {
     sequelize: connection,
     modelName: "musician",
   }
 );
+
+Musician.beforeCreate( async(musician) => {
+  const salt = await bcrypt.genSalt();
+  musician.salt = salt;
+  const passHass = await bcrypt.hash(musician.password, salt)
+  musician.password = passHass;
+});
 
 export default Musician;

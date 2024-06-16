@@ -8,6 +8,7 @@ const musicianRoutes = Router();
 musicianRoutes.get('/', musiciansControllers.getAllMusicians);
 musicianRoutes.get('/:id', musiciansControllers.getMusicianById);
 musicianRoutes.post('/', musiciansControllers.createMusician);
+musicianRoutes.post('/login', musiciansControllers.loginMusician);
 musicianRoutes.put('/:id', musiciansControllers.updateMusician);
 musicianRoutes.delete('/:id', musiciansControllers.deleteMusician);
 

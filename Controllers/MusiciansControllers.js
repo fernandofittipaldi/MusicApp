@@ -91,6 +91,24 @@ class MusicianControllers{
     }
   };
 
+  loginMusician = async(req, res) => {
+    try {
+      const { email, password } = req.body;
+      const data = await Musician.findOne( 
+      {
+        where: {
+          email,
+        },
+      });
+      if (!data) throw new Error('Invalid User');
+      const validate = await data.validatePassword(password);
+      if (!validate) throw new Error('Invalid Password');
+      res.status(200).send({ success: true, message: data.id});
+    } catch (error) {
+      res.status(500).send({ success: false, message: error.message});
+    }
+  };
+
 }
 
 export default MusicianControllers;
