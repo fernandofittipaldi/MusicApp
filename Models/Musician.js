@@ -34,6 +34,10 @@ Musician.init(
       type: DataTypes.INTEGER,
       defaultValue: 2
     },
+    instrumentId: {
+      type: DataTypes.INTEGER,
+      defaultValue: 1
+    },
   },
   {
     sequelize: connection,
