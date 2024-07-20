@@ -7,7 +7,7 @@ class MusicianControllers{
   getAllMusicians = async(req, res) => {
     try{
       const data = await Musician.findAll({
-        attributes: ['name', 'lastName', 'email'],
+        attributes: ['name', 'lastName', 'email', 'city', 'experience'],
         include: [{
           model: Role,
           attributes: ['name'],
@@ -56,7 +56,10 @@ class MusicianControllers{
   updateMusician = async(req, res) => {
     try {
       const { id } = req.params;
+      console.log(id);
       const { name, lastName, email, city, experience, password, roleId } = req.body;
+      console.log(name);
+      console.log(lastName);
       const data = await Musician.update({
         name, 
         lastName, 
@@ -113,21 +116,34 @@ class MusicianControllers{
       const token = generateToken(payload);
       res.cookie('token', token);
 
-      res.status(200).send({ success: true, message: "Login OK"});
+      res.status(200).send({ success: true, message: "Login OK", token});
     } catch (error) {
       res.status(500).send({ success: false, message: error.message});
     }
   };
 
+  // me = async (req, res) => {
+  //   try {
+  //     const { user } =req;
+  //     if (!user) throw new Error ('Invalid login');
+  //     res.status(200).send({ success: true, message: { user }});
+  //   } catch (error) {
+  //     res.status(500).send({ success: false, message: error.message});
+  //   }
+  // }
   me = async (req, res) => {
     try {
-      const { user } =req;
-      if (!user) throw new Error ('Invalid login');
-      res.status(200).send({ success: true, message: { user }});
+      const { id } = req.user;
+      const user = await Musician.findByPk(id);
+  
+      if (!user) throw new Error('Invalid login');
+  
+      res.status(200).send({ success: true, message: { user } });
     } catch (error) {
-      res.status(500).send({ success: false, message: error.message});
+      res.status(500).send({ success: false, message: error.message });
     }
-  }
+  };
+  
 
 }
 
